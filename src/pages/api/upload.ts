@@ -36,16 +36,18 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const response = req.body;
-  const blob = base64ToBlob(response, "image/jpeg");
+  // const blob = base64ToBlob(response, "image/jpeg");
 
-  // Upload the image to Supabase Storage
-  console.log("Uploading");
-  console.log("Converted to blob, uploading");
+  // // Upload the image to Supabase Storage
+  // console.log("Uploading");
+  // console.log("Converted to blob, uploading");
 
-  const { error, data } = await supabase.storage
-    .from("htn-test")
-    .upload(`webcam/image/${new Date().toISOString()}.jpg`, blob);
+  // const { error, data } = await supabase.storage
+  //   .from("htn-test")
+  //   .upload(`webcam/image/${new Date().toISOString()}.jpg`, blob);
 
-  console.log(error, data);
+  // console.log(error, data);
+
+  console.log(response);
   res.status(200).json({ name: "John Doe" });
 }
