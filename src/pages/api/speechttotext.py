@@ -1,0 +1,12 @@
+import os
+import openai
+
+from dotenv import load_dotenv
+load_dotenv()
+
+openai.api_key = os.getenv('OPENAI_API_KEY')
+
+audio_file= open("src/pages/api/harvard.wav", "rb")
+transcript = openai.Audio.transcribe("whisper-1", audio_file)
+
+print(transcript.text)
