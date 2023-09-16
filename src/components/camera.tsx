@@ -3,13 +3,12 @@ import Webcam from "react-webcam";
 import { Box, Button, Center, useInterval } from "@chakra-ui/react";
 import { createClient } from "@supabase/supabase-js";
 
-const SUPABASE_URL = "https://auafztfoghplfdukuydc.supabase.co";
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1YWZ6dGZvZ2hwbGZkdWt1eWRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTQ1Nzc4NjksImV4cCI6MjAxMDE1Mzg2OX0.HmHhbaNcV1Y2fVi4KtRPYNdt6F0nnQE73J6JGgyTk9A";
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_ANON_KEY!
+);
 
 function base64ToBlob(base64: string, contentType = "", sliceSize = 512) {
-  // remove data:image/webp;base64, if it exists
   const base64WithoutPrefix = base64.split(",")[1] || base64;
 
   const byteCharacters = atob(base64WithoutPrefix);
