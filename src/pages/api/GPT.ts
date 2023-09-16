@@ -37,7 +37,9 @@ export default async function handler(
       ],
     });
 
-    await axios.post("/");
+    await axios.post("/api/TTS", {
+      data: completion.choices[0].message.content,
+    });
   } else {
     res.status(405).send("Method Not Allowed");
   }
