@@ -1,12 +1,6 @@
 import React, { useRef, useState } from "react";
 import Webcam from "react-webcam";
 import { Box, Button, Center, useInterval } from "@chakra-ui/react";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!
-);
 
 function base64ToBlob(base64: string, contentType = "", sliceSize = 512) {
   const base64WithoutPrefix = base64.split(",")[1] || base64;
@@ -31,8 +25,8 @@ const CameraFeed: React.FC = () => {
   const webcamRef = useRef(null);
   const videoConstraints = {
     facingMode: { exact: "environment" },
-    width: 10,
-    height: 10,
+    width: 500,
+    height: 500,
   };
 
   const capture = React.useCallback(async () => {
@@ -40,9 +34,9 @@ const CameraFeed: React.FC = () => {
     const imageSrc = webcamRef.current.getScreenshot();
     if (imageSrc) {
       const blob = base64ToBlob(imageSrc, "image/jpeg");
-      const { error, data } = await supabase.storage
-        .from("htn-test")
-        .upload(`webcam/image/${new Date().toISOString()}.jpg`, blob);
+      // const { error, data } = await supabase.storage
+      //   .from("htn-test")
+      //   .upload(`webcam/image/${new Date().toISOString()}.jpg`, blob);
 
       await fetch("https://big-suits-give.tunnelapp.dev/invocation", {
         method: "POST",

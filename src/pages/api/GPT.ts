@@ -20,12 +20,12 @@ export default async function handler(
       "I'm a blind person without a cane. You are a camera that has detected several objects in my room and has to tell me what to do next.";
     const userPrePrompt =
       "These are the approximations for where the objects in my room are based on what you, as the camera, can see:";
-    const objectLocations =
-      "1. Luggage at the bottom of the screen 2. Table on the left 3. Couch on the right.";
+    const objectLocations = JSON.stringify(req.body);
+    // const objectLocations =
+    //   "1. Luggage at the bottom of the screen 2. Table on the left 3. Couch on the right.";
     const userPrompt =
       "I am moving forward. Tell me what to do next. Give me a max of one sentence.";
 
-    // Create the OpenAI API call based on the library you're using. Here's a placeholder call:
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
@@ -37,9 +37,15 @@ export default async function handler(
       ],
     });
 
-    await axios.post("/api/TTS", {
-      data: completion.choices[0].message.content,
-    });
+    // console.log(completion.choices[0].message.content);
+    // try {
+    //   await axios.post(`${process.env.LOCAL_URL}/api/TTS`, {
+    //     data: completion.choices[0].message.content,
+    //   });
+    // } catch (error) {
+    //   console.log("Fuck");
+    // }
+    res.status(200);
   } else {
     res.status(405).send("Method Not Allowed");
   }
