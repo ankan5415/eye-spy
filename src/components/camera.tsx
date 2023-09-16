@@ -32,8 +32,8 @@ const CameraFeed: React.FC = () => {
   const webcamRef = useRef(null);
   const videoConstraints = {
     facingMode: { exact: "environment" },
-    width: 1280,
-    height: 720,
+    width: 10,
+    height: 10,
   };
 
   const capture = React.useCallback(async () => {
@@ -44,7 +44,11 @@ const CameraFeed: React.FC = () => {
       const { error, data } = await supabase.storage
         .from("htn-test")
         .upload(`webcam/image/${new Date().toISOString()}.jpg`, blob);
-      console.log("Captured data");
+
+      await fetch("https://big-suits-give.tunnelapp.dev/invocation", {
+        method: "POST",
+        body: imageSrc,
+      });
     }
   }, [webcamRef]);
 

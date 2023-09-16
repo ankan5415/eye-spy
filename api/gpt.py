@@ -1,5 +1,6 @@
 import openai
 from http.server import BaseHTTPRequestHandler
+import os
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -21,10 +22,11 @@ class handler(BaseHTTPRequestHandler):
             {"role": "user", "content": f'{user_pre_prompt} {object_locations} {user_prompt}'}
             ]
         )
-        
+    
+
         self.send_response(200)
         self.send_header('Content-type','text/plain')
         self.end_headers()
-        self.wfile.write(completion.choices[0].message.encode('utf-8'))
+        self.wfile.write(completion.choices[0].message.content.encode('utf-8'))
         return
     
