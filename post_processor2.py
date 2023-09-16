@@ -18,10 +18,29 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         bounding_boxes = post_data['Boxes']
         labels = post_data['Classes']
         
+        
+        image_width = post_data['image_width']
+        center = (bounding_boxes[1] + bounding_boxes[3]) / 2
+        threshold = image_width / 2
+        
+        instructions = []
+        
+        if center < threshold:
+            instructions.append(f'{labels} is on your left')
+        elif center > threshold:
+            instructions.append(f'{labels} is on your right')
+        else:
+            instructions.append(f'{labels} is in the center')
+        
+        
+        
         self.send_response(200)
         # self.send_header('Content-Type', 'application/json')
         # self.end_headers()
         #self.wfile.write(json.dumps(data).encode())
+        
+        
+        
         
         
         
