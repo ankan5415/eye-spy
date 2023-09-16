@@ -1,29 +1,31 @@
 import requests
 import numpy as np
 import cv2
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import json
 
-from service import *
 
-input_image = cv2.imread("input.jpg")
-
-# Create a dictionary with the image in the format expected by BentoML
-input_data = {'input_img': input_image}
-
-url = 'http://localhost:5000/predict'  # Replace with the actual URL of your service
-response = requests.post(url, files=input_data)
-
-# Check if the request was successful
-if response.status_code == 200:
-    # Parse the JSON response
-    result = response.json()
-    
-    # Access the bounding boxes and labels
-    bounding_boxes = result['Boxes']
-    labels = result['Classes']
-    
-    # Now you can use bounding_boxes and labels as needed
-    print("Bounding Boxes:", bounding_boxes)
-    print("Labels:", labels)
-else:
-    print("Error:", response.text)
+class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
+    def do_POST(self):
+        content_length = int(self.headers['Content-Length'])
+        post_data = self.rfile.read(content_length)
+        # Your logic for handling the image and predicting.
+        # For now, it just sends back a mock bounding box and label.
+        # You'd typically integrate with BentoML or another ML library here.
+        # Mock data
+        
+        
+        bounding_boxes = post_data['Boxes']
+        labels = post_data['Classes']
+        
+        self.send_response(200)
+        # self.send_header('Content-Type', 'application/json')
+        # self.end_headers()
+        #self.wfile.write(json.dumps(data).encode())
+        
+        
+        
+if __name__ == "__main__":
+    httpd = HTTPServer(('localhost', 5000), SimpleHTTPRequestHandler)
+    httpd.serve_forever()
 
