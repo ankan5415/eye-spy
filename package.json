@@ -17,7 +17,9 @@
     "@types/node": "20.6.1",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
+    "@types/react-speech-recognition": "^3.9.2",
     "axios": "^1.5.0",
+    "easy-speech": "^2.1.1",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
     "framer-motion": "^10.16.4",
@@ -25,7 +27,15 @@
     "openai": "^4.7.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-speech-kit": "^3.0.1",
+    "react-speech-recognition": "^3.10.0",
     "react-webcam": "^7.1.1",
-    "typescript": "5.2.2"
+    "regenerator-runtime": "^0.14.0",
+    "typescript": "5.2.2",
+    "ws": "^8.14.1"
+  },
+  "devDependencies": {
+    "@types/easy-speech": "^1.2.1",
+    "@types/ws": "^8.5.5"
   }
 }
