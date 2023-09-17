@@ -47,15 +47,6 @@ export default async function handler(
 
     const text = completion.choices[0].message.content;
 
-    // console.log("Creating speech response");
-    // const speechResponse = await ElevenLabsAPI.textToSpeech(
-    //   "21m00Tcm4TlvDq8ikWAM",
-    //   text!
-    // ).catch((error) => console.log(error));
-
-    // console.log(speechResponse);
-
-    // res.status(200).send(speechResponse.data);
     res.status(200).send(text);
   } catch (error: any) {
     res.status(500).send(`Something went wrong: ${error.message}`);

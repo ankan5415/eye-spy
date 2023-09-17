@@ -10,6 +10,7 @@ const CameraFeed: React.FC = () => {
   const [hasEnabledVoice, setHasEnabledVoice] = useState(false);
   const webcamRef = useRef<Webcam>(null);
   const { speak } = useSpeechSynthesis();
+  const [timer, setTimer] = useState(0);
 
   const videoConstraints = {
     width: 500,
@@ -22,7 +23,7 @@ const CameraFeed: React.FC = () => {
 
   const capture = async () => {
     const imageSrc = webcamRef.current?.getScreenshot();
-
+    console.log(timer);
     speak({ text: "" });
     if (imageSrc) {
       const response = await fetch("/api/processImage", {
@@ -34,11 +35,23 @@ const CameraFeed: React.FC = () => {
       setText(d);
       speak({ text: d });
     }
+    setTimer(0);
   };
 
-  setInterval(() => {
-    capture();
-  }, 12000);
+  useEffect(() => {
+    if (timer > 5) {
+      capture();
+      setTimer(0);
+    }
+
+    const interval = setInterval(() => {
+      setTimer((prev) => prev + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [timer]);
 
   return (
     <Center h="full" w="full" justifyContent={"center"} alignItems={"center"}>
