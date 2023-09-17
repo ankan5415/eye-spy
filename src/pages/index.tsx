@@ -1,44 +1,78 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Box, Button, Center, Flex, useMediaQuery } from "@chakra-ui/react";
-// import "regenerator-runtime/runtime.js";
-
-// import SpeechRecognition, {
-//   useSpeechRecognition,
-// } from "react-speech-recognition";
-
-import CameraFeed from "@/components/camera";
-// import WebSocketComponent from "@/components/Websocket";
+import Webcam from "react-webcam";
+// @ts-ignore
+import { useSpeechSynthesis } from "react-speech-kit";
 
 // @ts-ignore
 export default function Home(props) {
-  // const {
-  //   transcript,
-  //   listening,
-  //   resetTranscript,
-  //   browserSupportsSpeechRecognition,
-  // } = useSpeechRecognition();
+  const [text, setText] = useState("");
+  const [hasEnabledVoice, setHasEnabledVoice] = useState(false);
+  const webcamRef = useRef<Webcam>(null);
+  const { speak } = useSpeechSynthesis();
+  const [timer, setTimer] = useState(0);
 
-  // useEffect(() => {
-  //   SpeechRecognition.startListening();
-  // }, []);
+  const videoConstraints = {
+    width: 500,
+    height: 500,
+  };
 
-  // useEffect(() => {
-  //   console.log(transcript);
-  // }, [transcript]);
+  useEffect(() => {
+    window.speechSynthesis.getVoices();
+  }, []);
+
+  const capture = async () => {
+    const imageSrc = webcamRef.current?.getScreenshot();
+
+    speak({ text: "" });
+
+    if (imageSrc) {
+      const response = await fetch("/api/processImage", {
+        method: "POST",
+        body: imageSrc,
+      }).then((res) => res.text());
+
+      if (response) {
+        setText(response);
+        speak({ text: response });
+      } else {
+        setText("Something went wrong, please try again");
+      }
+    }
+
+    setTimer(0);
+  };
+
+  useEffect(() => {
+    if (timer > 5) {
+      capture();
+      setTimer(0);
+    }
+
+    const interval = setInterval(() => {
+      setTimer((prev) => prev + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [timer]);
 
   return (
-    <Box
-      bgImage={{ base: "none" }}
-      bgPosition="center"
-      bgSize="cover"
-      h="100vh"
-      w="full"
-      justifyContent={"center"}
-      alignItems={"center"}
-    >
-      <Center h="full" w="full" justifyContent={"center"} alignItems={"center"}>
-        <CameraFeed />
-      </Center>
-    </Box>
+    <div>
+      <div className="w-full flex h-screen items-center justify-center">
+        <Webcam
+          className="rounded-full"
+          audio={false}
+          ref={webcamRef}
+          screenshotFormat="image/jpeg"
+          videoConstraints={{
+            ...videoConstraints,
+            facingMode: { ideal: "environment" },
+          }}
+        />
+
+        {text && <p className="mt-3">{text}</p>}
+      </div>
+    </div>
   );
 }

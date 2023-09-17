@@ -34,18 +34,19 @@ export default async function handler(
     const objectLocations = response.data;
 
     console.log("Got text");
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        { role: "system", content: gptRole },
-        {
-          role: "user",
-          content: `${userPrePrompt} ${objectLocations} ${userPrompt}`,
-        },
-      ],
-    });
+    // const completion = await openai.chat.completions.create({
+    //   model: "gpt-3.5-turbo",
+    //   messages: [
+    //     { role: "system", content: gptRole },
+    //     {
+    //       role: "user",
+    //       content: `${userPrePrompt} ${objectLocations} ${userPrompt}`,
+    //     },
+    //   ],
+    // });
 
-    const text = completion.choices[0].message.content;
+    // const text = completion.choices[0].message.content;
+    const text = "hi";
 
     res.status(200).send(text);
   } catch (error: any) {
