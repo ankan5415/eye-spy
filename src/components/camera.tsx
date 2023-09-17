@@ -1,51 +1,44 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useCallback, useState } from "react";
 import Webcam from "react-webcam";
-import { Box, Button, Center, useInterval } from "@chakra-ui/react";
-
-function base64ToBlob(base64: string, contentType = "", sliceSize = 512) {
-  const base64WithoutPrefix = base64.split(",")[1] || base64;
-
-  const byteCharacters = atob(base64WithoutPrefix);
-  const byteArrays = [];
-
-  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-    const slice = byteCharacters.slice(offset, offset + sliceSize);
-    const byteNumbers = new Array(slice.length);
-    for (let i = 0; i < slice.length; i++) {
-      byteNumbers[i] = slice.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    byteArrays.push(byteArray);
-  }
-
-  return new Blob(byteArrays, { type: contentType });
-}
+import { Box, Button, Center, Text } from "@chakra-ui/react";
+import EasySpeech from "easy-speech";
+// @ts-ignore
+import { useSpeechSynthesis } from "react-speech-kit";
 
 const CameraFeed: React.FC = () => {
-  const webcamRef = useRef(null);
+  const [text, setText] = useState("");
+  const [hasEnabledVoice, setHasEnabledVoice] = useState(false);
+  const webcamRef = useRef<Webcam>(null);
+  const { speak } = useSpeechSynthesis();
+
   const videoConstraints = {
-    facingMode: { exact: "environment" },
     width: 500,
     height: 500,
   };
 
-  const capture = React.useCallback(async () => {
-    // @ts-ignore
-    const imageSrc = webcamRef.current.getScreenshot();
-    if (imageSrc) {
-      const blob = base64ToBlob(imageSrc, "image/jpeg");
-      // const { error, data } = await supabase.storage
-      //   .from("htn-test")
-      //   .upload(`webcam/image/${new Date().toISOString()}.jpg`, blob);
+  useEffect(() => {
+    window.speechSynthesis.getVoices();
+  }, []);
 
-      await fetch("https://big-suits-give.tunnelapp.dev/invocation", {
+  const capture = async () => {
+    const imageSrc = webcamRef.current?.getScreenshot();
+
+    speak({ text: "" });
+    if (imageSrc) {
+      const response = await fetch("/api/processImage", {
         method: "POST",
         body: imageSrc,
       });
-    }
-  }, [webcamRef]);
 
-  useInterval(capture, 3000);
+      const d = await response.text();
+      setText(d);
+      speak({ text: d });
+    }
+  };
+
+  setInterval(() => {
+    capture();
+  }, 12000);
 
   return (
     <Center h="full" w="full" justifyContent={"center"} alignItems={"center"}>
@@ -62,9 +55,14 @@ const CameraFeed: React.FC = () => {
           ref={webcamRef}
           screenshotFormat="image/jpeg"
           width="100%"
-          videoConstraints={videoConstraints}
+          videoConstraints={{
+            ...videoConstraints,
+            facingMode: { ideal: "environment" },
+          }}
         />
       </Box>
+
+      <Button onClick={capture}>Capture</Button>
     </Center>
   );
 };
