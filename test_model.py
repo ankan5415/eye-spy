@@ -24,8 +24,6 @@ cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask
 predictor = DefaultPredictor(cfg)
 outputs = predictor(im)
 
-import IPython; IPython.embed()
-
 v = Visualizer(im[:,:,::-1], MetadataCatalog.get(cfg.DATASETS.TRAIN[0]), scale=1.2)
 v = v.draw_instance_predictions(outputs['instances'].to('cpu'))
 img = v.get_image()[:, :, ::-1]
