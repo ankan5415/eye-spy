@@ -52,6 +52,6 @@ def grid(obj, cocolabels):
         else:
             row_position = "somewhere in between"
 
-        grid_cell = f"Column {row_index}, Row {col_index} ({row_position}, {col_position})"
+        grid_cell = f"({row_position}, {col_position})"
         instructions.append(f"{cocolabels[label]} is in {grid_cell}")
     return instructions
